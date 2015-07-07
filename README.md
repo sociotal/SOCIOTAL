@@ -1,2 +1,2 @@
-# project
+# SOCIOTAL
 SOCIOTAL designs and will provide key enablers for a reliable, secure and trusted IoT environment that enable creation of a socially aware citizen-centric Internet of Things by encouraging people to contribute their IoT devices and information flows. It will provide the techno-social foundations to unlock billions of new IoT information streams taking a citizen-centric IoT approach towards creation of large-scale IoT solutions of interest to the society. By equipping communities with secure and trusted tools that increase user confidence in IoT environment, SOCIOTAL will enable their transition to smart neighbourhood, communities and cities.
