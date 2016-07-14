@@ -1,0 +1,114 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='description', content='')
+        meta(name='author', content='')
+        link(rel='shortcut icon', href='#{pathToAssets}/assets/ico/favicon.png')
+        title Signup to Sociotal
+        // Bootstrap core CSS
+        link(href='/startbootstrap/bower_components/bootstrap/dist/css/bootstrap.css', rel='stylesheet')
+        link(href='/css/social-sharing.css', rel='stylesheet')
+        // Custom styles for this template
+        link(href='/css/signin.css', rel='stylesheet')
+        link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", rel="stylesheet")
+        script(src='https://www.google.com/recaptcha/api.js')
+
+        script.
+            function registerAPI(form) {
+                var params = {
+                    username: form.username.value,
+                    password: form.password.value,
+                    email: form.email.value,
+                    recaptcha: document.getElementById("g-recaptcha-response").value
+                };
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/register");
+                xhr.onload = function() {
+                    var json = JSON.parse(xhr.responseText);
+                    console.log(json);
+                    if (json.registeredSuccessfully) {
+                        showSuccess();
+                    } else {
+                        showError(json.reason);
+                    }
+                }
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.send(JSON.stringify(params));
+            }
+            function showSuccess() {
+                document.getElementById("form").style.display = "none";
+                document.getElementById("success").style.display = "block";
+            }
+            function showError(err) {
+                document.getElementById("error").style.display = "block";
+                document.getElementById("error").innerHTML = err;
+            }
+
+            function checkPassword() {
+                var pass1 = document.getElementById("password").value;
+                var pass2 = document.getElementById("confirm-password").value;
+                if (pass2.length > 0) {
+                    if (pass1 != pass2) {
+                        document.getElementById("error").style.display = "block";
+                        document.getElementById("password").style.borderColor = "#E34234";
+                        document.getElementById("confirm-password").style.borderColor = "#E34234";
+                        showError("Passwords don't match");
+                    }
+                    else {
+                        document.getElementById("error").style.display = "none";
+                        document.getElementById("password").style.borderColor = "green";
+                        document.getElementById("confirm-password").style.borderColor = "green";
+                    }
+                }
+            }
+
+
+body(style="background-image: url('/images/bg.jpeg'); background-repeat: no-repeat; background-size: 100%;")
+
+
+        .container
+            - if(act_mail)
+                form.form-signin(style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo_login.png", style=" border: 0px solid #000")
+                    .foo
+                        p
+                            | A confirmation email is sent to
+                            b  #{email}
+                            |  with further instructions. <br>Please visit you email account and click on the link to activate the account. <br><br>
+                            | <a href="/login">Log In</a>
+    
+            - else
+    
+                form.form-signin(action="/users", method="post", role="form", style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo_login.png", style=" border: 0px solid #000")
+
+                    div.alert.alert-danger.setVisibility(id="error", style="display:none")
+
+                    - if(error)
+                        div.alert.alert-danger= error
+    
+                    h2.form-signin-heading Sign up
+
+                    input#name.form-control(type='text', name="name", placeholder='Full name', value='')
+                    input#email.form-control(type='text', name="email", placeholder='Email', value='')
+                    input#username.form-control(type='text', name="username", placeholder='Username', value='')
+                    input#password.form-control(type='password', name="password", placeholder='Password', onchange='checkPassword()')
+                    input#confirm-password.form-control(type='password', name="confirm-password", placeholder='Confirm Password', onchange='checkPassword()')
+
+                    //- if(!virtualmachine)
+                    .g-recaptcha(data-sitekey='#{recaptcha_key}')
+    
+                    br
+    
+                    button.btn.btn-primary(type='submit') Sign up
+    
+                    hr(style="border: 1px solid #000")
+                    a.show-login(href="/login") Log in
+                    | &nbsp; or &nbsp;
+                    a.show-login(href="/users/password/forgot") Forgot your password?
+    
+                    br
+                    br
+

@@ -1,0 +1,49 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+    script(src='/js/sociotal/device.js')
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+      script(type='text/javascript').
+        var templates_obj = "#{JSON.stringify(templates)}";
+
+      //Page Content
+      #page-wrapper
+        .container-fluid
+          .row
+            .col-lg-12
+              h1.page-header Creating a new Device, Step 1: Select Device type
+          .row
+            .col-lg-12              
+                p.description= "Select the device Type from the list below"
+          .row
+            .col-lg-12
+              .col-md-3
+                | &nbsp;
+              .col-md-6
+                .panel.panel-body
+
+                  - each device_template in templates
+                    .col-md-5
+                      .panel.panel-default
+                        .panel-heading
+                          .row
+                            .col-md-12.text-center
+                              a(href="/devices/new/#{device_template.name}?action=newDevice")
+                                img(src="/images/#{device_template.name}.png" height="95px")
+                              //i.fa.fa-comments.fa-5x.text-center
+                        .panel-footer.text-center
+                          span.boder #{device_template.name}
+                          .clearfix
+
+              .col-md-3
+                | &nbsp;
+
+
+
+    include ../includes/footer.jade

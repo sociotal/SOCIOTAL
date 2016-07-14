@@ -1,0 +1,117 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+                h1 Your Profile
+            
+                
+          .row
+            .col-lg-12
+              p.description
+                 | Hi <b>#{user.name.toUpperCase()}</b>, below you can find your profile and related info as stored in our systems. 
+          
+          .row
+             .col-lg-12
+               p.description= ""
+         
+          
+
+         .row
+             .col-md-12
+                     .panel.panel-default
+                         .panel-heading
+                             span.pull-left
+                                 | Personal Information
+                             span.pull-right
+                                 button.btn.btn-danger.pull-right(type='button' title="Delete your Account" data-toggle="tooltip" data-placement="top" onclick="confirmDelete('#{user._id}')")
+                                    | Delete Account
+                             .clearfix
+                         // /.panel-heading
+                         .panel-body
+                             .col-md-3
+                                - if (user.image)
+                                    img(id="profile-user-image", style="border: 2px solid #FFFFFF; border-radius: 50%;", width="128px")
+                             .col-md-3
+                                h1
+                                  small
+                                    | #{user.name} (#{user.username})
+                                  br
+                                h3
+                                  small
+                                    | #{user.email}
+                                
+                             .clearfix
+
+         .row.page-header
+           .col-lg-10
+               h1 API and Personal Key
+             .col-md-2.text-right
+               
+         .row
+           .col-lg-12
+             p.description
+                | If you’re also a developer, the API Key is the authentication code you need to specify in all your SocIoTal User Env API calls. QR code visually  represents the same key. <br/>Keep it private! Read more on the <a href="https://github.com/sociotal/SOCIOTAL/wiki/User-Environment-API" target="_blank">documentation</a>.
+                
+         .row
+            .col-lg-12
+              p.description= ""
+               
+         .row
+            .col-md-10
+                    .panel.panel-info
+                        .panel-heading
+                            span.pull-left
+                                | API Key
+                            
+                            .clearfix
+                        // /.panel-heading
+                        .panel-body
+                            p #{user.authToken}
+                            
+            .col-md-2
+                   #qr-code.pull-right
+  
+  script(type='text/javascript' src='/js/jquery.qrcode-0.11.0.js')
+  script(type='text/javascript').
+         $( document ).ready(function() {            
+             $("#qr-code").qrcode({
+                 "size": 100,
+                 "fill": "#686868",
+                 "text": "#{user.authToken}"
+             });
+
+
+             var userImage = '#{req.user.image}';
+             if(userImage.indexOf("graph.facebook.com") > -1){
+                 var userImage = userImage.replace("http", "https");
+                 $.getJSON(userImage + "?redirect=false", function( response ) {
+                     $('#profile-user-image').attr("src", response.data.url);
+                 });
+             } else
+                 $('#profile-user-image').attr("src", userImage);
+
+             
+         });
+  
+  script(type='text/javascript' src='/js/bootbox.min.js')     
+  script(type='text/javascript' src='/js/sociotal/profile.js')
+
+
+  
+  
+                 
+   
+     
+             
+   include ../includes/footer.jade

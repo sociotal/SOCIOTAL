@@ -1,0 +1,237 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+  body
+    script(src='/js/sociotal/data.js')
+    script(src='/js/sociotal/connection.js')
+    script(src='/js/sociotal/subscription.js')
+    script(src='/js/sociotal/community.js')
+    script(type='text/javascript', src='/js/jquery.bootpag.min.js')
+
+    script(type='text/javascript').
+      var data = null;
+      var conn = null;
+      var subs = null;
+      var channel = !{JSON.stringify(channel)};
+      $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        conn = new Connection();
+        conn.list(channel._id);
+
+        data = new Data(channel._id);
+        data.loadData();
+
+        data.connectSocketIo('#{socketioUrl}');
+
+        listMembers(channel.community_name);
+
+      })
+
+      function deleteChannel(channelId){
+        bootbox.confirm("Are you sure you want to delete the channel?", function(result){
+          if(result){
+            $.ajax({
+              url: "/channels/" + channelId ,
+              type: 'DELETE',
+              success: function(result) {
+                window.location = "/channels";
+              }
+            });
+          }
+        });
+      }
+
+
+
+
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              //img.pull-left(src="/images/#{channel.channel_type}.png" style="height:60px; margin-right: 25px")
+              .col-sm-1
+                i.fa.fa-envelope-o.fa-5x
+              .col-sm-5
+                h1.pull-left #{channel.title}
+
+            .col-md-2.text-right
+              a(href="/channels/#{channel._id}/edit?action=edit")
+                button.btn.btn-primary.btn-circle.btn-lg(type="button" title="Edit" data-toggle="tooltip" data-placement="top")
+                  i.fa.fa-pencil
+
+              span &nbsp;
+              a(href="#" onclick="deleteChannel('#{channel._id}')")
+                button.btn.btn-danger.btn-circle.btn-lg(type="button" title="Delete" data-toggle="tooltip" data-placement="top")
+                  i.fa.fa-times
+
+          .row
+            .col-lg-12              
+                p.description
+                  | This Channel sends emails to all members of the configured  Community. Below you can find all the details about it: general info, Community members and data.
+                  
+
+          //.row.page-header
+          //  .col-lg-12
+          //    h3 Some head
+
+          .row
+            .col-md-10
+              // channel info table
+              .col-md-6
+                .panel.panel-default
+                  .panel-heading
+                    | Channel info
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table
+                        tbody
+                          tr
+                            td Author
+                            td
+                              a(href="#") #{channel.user.name}
+                          tr
+                            td Type
+                            td #{channel.channel_type}
+                          - if(channel.channel_type == "SocIoTalChannel")
+                            tr
+                              td SocIoTal ID
+                              td
+                                a(href="/devices/#{channel.contextId}") #{channel.contextId}
+                          tr
+                            td Date
+                            td #{formatDate(channel.createdAt, "%b %d, %Y at %I:%M %p")}
+
+                          tr
+                            td Description
+                            td #{channel.description}
+                          tr
+                            td Tags
+                            td #{channel.tags}
+                          tr
+                            td Community
+                            td #{channel.community_name}
+
+
+
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    .col-lg-10
+                      | Members of the Community
+                    .clearfix
+
+                  .panel-body
+                    input(type="hidden" id="entities-list" value="")
+                    div(id="members-container")
+                      .row(style="text-align:center")
+                        img(id="loader" src="/images/loader.gif" style="width:64px;")
+
+          script(type='text/x-jquery-tmpl', id='members-template')
+            .col-sm-4
+              .panel.panel-primary
+                .panel-heading
+                  .row
+                    .col-xs-3
+                      i.fa.fa-user.fa-3x
+                    .col-xs-9.text-right
+                      div.h5
+                        ${name}
+                      div
+                        ${role}
+                      div
+                        ${email}
+
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    .col-lg-10
+                      | Data (
+                      span(id="data-count") 0
+                      span(id="data-page")
+                      |)
+
+                    .col-md-2.text-right
+                      - if(channel.channel_type == "SocIoTalChannel")
+                        input(type="hidden", id="context_id", value="#{channel.contextId}")
+                        input(type="hidden", id="context_type", value="#{channel.contextType}")
+                        input(type="hidden", id="channel_id", value="#{channel._id}")
+                        input(type="hidden", id="subscription-id", value="")
+
+                        //a(href="/channels/#{channel._id}/subscribed")
+                        span(id="run-status")
+                        button.btn.btn-success.btn-circle(type='button' id="button-sub" onclick="subs.easySubscribe()" title="Subscribe to start gathering data" data-toggle="tooltip" data-placement="top")
+                          i.fa.fa-play
+
+                      span &nbsp;
+                      button.btn.btn-danger.btn-circle(type='button' onclick="data.clearData('#{channel._id}')" title="Clear data" data-toggle="tooltip" data-placement="top")
+                        i.fa.fa-times
+                    .clearfix
+                  .panel-body
+                    .table-responsive(id="data-container")
+                      input(type="hidden", id="data-content", value="")
+                      table.table.table-striped.table-bordered.table-hover(id="data-table")
+                        thead
+                          tr
+                            //th #
+                            th Date
+                            th Type
+                            th Key
+                            th Value
+                            //th Unit
+
+                        tbody(id="data-body")
+
+                      nav.pull-right
+                        ul(id="paginator").pagination
+
+
+
+                    p(id="data-empty").description
+                      | No data, yet.
+                      - if(channel.channel_type == "SocIoTalChannel")
+                        |  Please &nbsp;
+                        a(href="#" title="Subscribe to start gathering data" data-toggle="tooltip" data-placement="top" onclick="subs.easySubscribe()") subscribe
+
+
+
+
+            .row
+              .col-lg-12
+                br
+
+    include ../../includes/footer.jade
+
+
+
+
+
+script(type='text/x-jquery-tmpl', id='data-template')
+  tr
+    //td
+      h5 ${index}
+    td(width="25%", padding="2")
+      h5 ${date_created}
+    td
+      h5 ${request_type}
+    td
+      h5 ${data_type}
+    td
+      h5 ${value}
+    //td
+      h5 ${unit}
+

@@ -1,0 +1,128 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+
+    script(type="text/javascript" src="/js/validate.min.js")
+
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              img.pull-left(src="/images/XivelyChannel.png" style="height:60px; margin-right: 25px")
+              span
+              h1.pull-left New Xively Channel
+
+          .row
+            .col-lg-12
+              p.description= "Filling the form below you can create a new Xively Channel, able to get data from that platform."
+
+          .row
+            .col-lg-12
+              .col-md-3
+                br
+                br
+                br
+          - var action = '/channels'
+          - action += channel.isNew? '' : '/' + channel.id
+          .row
+            .col-lg-12
+              .col-md-5.col-centered
+                .panel.panel-default
+                  .panel-heading
+                    | Channel details
+                  .panel-body.body
+                    form.form-horizontal(method="post", id="channel-form" action=action, enctype="multipart/form-data", role="form")
+                      input(type="hidden", name="_csrf", value="#{csrf_token}")
+                      input(type="hidden", name="channel_type", value="#{channel_type}")
+                      - if (!channel.isNew)
+                        input(type="hidden", name="_method", value="PUT")
+  
+                      .alert.alert-danger.hidden
+
+                      .form-group
+                        .col-sm-10
+                          label Name (required)
+                          input.form-control(type='text', name="title", value=channel.title, placeholder='Enter a name for this Channel')
+                      .form-group
+                        .col-sm-10
+                          label(for='feedID') feedID (required)
+                          input.form-control(type='text', name="feedID", value=channel.feedID, placeholder='Enter the Xively feed ID')
+                      .form-group
+                        .col-sm-10
+                          label(for='xivelyChannelID') ChannelID (required)
+                          input.form-control(type='text', name="xivelyChannelID", value=channel.xivelyChannelID, placeholder='Enter the Xively Channel ID')
+                      .form-group
+                        .col-sm-10
+                          label(for='apiKey') apiKey (required)
+                          input.form-control(type='text', name="apiKey", value=channel.apiKey, placeholder='Enter your Xively API Key')
+                      .form-group
+                        .col-sm-10
+                          label(for='interval_sec') Interval (sec.)
+                          input.form-control(type='number', name="interval_sec", value=channel.interval_sec, placeholder='Enter the polling interval to get data')
+                      .form-group
+                        .col-sm-10
+                          label(for='desc') Description
+                          textarea.form-control#desc(rows="5", name="description", placeholder='Enter a description')=channel.description
+                      .form-group
+                        .col-sm-10
+                          label(for='tags') Tags
+                          input.form-control#tags(type='text', name="tags", value=channel.tags, placeholder='Enter a list of comma-separated tags')
+
+                      button.btn.btn-primary(type='submit') Save
+                      | &nbsp;
+                      a(href="/channels" role="button").btn.btn-default Cancel
+
+
+    script(type="text/javascript").
+      var validator = new FormValidator('channel-form', [{
+        name: 'title',
+        display: 'Name',
+        rules: 'required|max_length[30]'
+      },
+        {
+          name: 'feedID',
+          display: 'Xively Feed ID',
+          rules: 'required'
+        },
+        {
+          name: 'xivelyChannelID',
+          display: 'Xively Channel ID',
+          rules: 'required'
+        },
+        {
+          name: 'apiKey',
+          display: 'Xively API Key',
+          rules: 'required'
+        },
+
+
+      ], function (errors, event) {
+
+        if (errors.length > 0) {
+          $('.alert').removeClass('hidden');
+          errors.forEach(function (e, i, a) {
+            $('.alert').append(e.message + '<br/>');
+
+            setTimeout(function(){
+              $('.alert').addClass('hidden');
+              $('.alert').text('');
+            }, 6000);
+          });
+
+        } else {
+          $('.alert').addClass('hidden');
+          $('.alert').text('');
+        }
+      });
+ 
+
+    include ../../includes/footer.jade
+

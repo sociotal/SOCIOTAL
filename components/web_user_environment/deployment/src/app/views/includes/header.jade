@@ -1,0 +1,56 @@
+.navbar-header
+  .row
+    .col-md-12
+
+      a.navbar-brand(href='/')
+        img(src="/images/sociotal_logo.png" style="height:30px")
+
+// /.navbar-header
+ul.nav.navbar-top-links.navbar-right
+  script(type='text/javascript').
+      $(document).ready(function(){
+          var userImage = '#{req.user.image}';
+          if(userImage.indexOf("graph.facebook.com") > -1){
+              var userImage = userImage.replace("http", "https");
+              $.getJSON(userImage + "?redirect=false", function( response ) {
+                  $('#head-user-image').attr("src", response.data.url);
+              });
+          } else
+              $('#head-user-image').attr("src", userImage);
+      });
+  li
+
+    .row
+      img(id="head-user-image", style="border: 2px solid #FFFFFF; border-radius: 50%;", width="40")
+      a(href="/users/"+req.user.id, title="Profile") #{req.user.name}
+
+  li.dropdown
+    a.dropdown-toggle(data-toggle='dropdown', href='#')
+      i.fa.fa-user.fa-fw
+      i.fa.fa-caret-down
+    ul.dropdown-menu.dropdown-user
+
+
+
+      li
+        a(href='/users/' + req.user.id)
+          i.fa.fa-user.fa-fw
+          |  Your Profile
+      li.divider
+        li
+          a(href='http://www.sociotal.eu' target='_blank')
+            i.fa.fa-globe.fa-fw
+            |  What is SocIoTal?
+      li.divider
+        li
+          a(href='#')
+            i.fa.fa-gear.fa-fw
+            |  Version #{req.res.locals.pkg.version}
+      li.divider
+      li
+        a(href='/logout')
+          i.fa.fa-sign-out.fa-fw
+          |  Logout
+    // /.dropdown-user
+  // /.dropdown
+// /.navbar-top-links

@@ -1,0 +1,84 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row
+            .col-lg-12
+              h1.page-header Creating a new Channel, Step 1: Channel type
+          .row
+            .col-lg-12              
+                p.description= "Select the from the list below the type of the Channel you want to create"
+
+          .row
+            .col-lg-12
+              .col-md-3
+                | &nbsp;
+              .col-md-6
+                .panel.panel-body
+
+                  .col-md-5
+                    .panel.panel-default
+                      .panel-heading
+                        .row
+                          .col-md-12.text-center
+                            a(href="/devices?action=newChannel")
+                              img(src="/images/SocIoTalChannel.png" height="90%" style="height: 94px;")
+                            //i.fa.fa-comments.fa-5x.text-center
+                      .panel-footer.text-center
+                        span.boder SocIoTal
+                        .clearfix
+
+                  .col-md-5
+                    .panel.panel-default
+                      .panel-heading
+                        .row
+                          .col-md-12.text-center
+                            a(href="/channels/new/DebugChannel?action=newChannel")
+                              img(src="/images/DebugChannel.png" height="90%" style="height: 94px;")
+                            //i.fa.fa-comments.fa-5x.text-center
+                      .panel-footer.text-center
+                        span.boder DebugChannel
+                        .clearfix
+
+                  .col-md-5
+                    .panel.panel-default
+                      .panel-heading
+                        .row
+                          .col-md-12.text-center
+                            a(href="/channels/new/XivelyChannel?action=newChannel")
+                              img(src="/images/XivelyChannel.png" height="90%" style="height: 94px;")
+                            //i.fa.fa-comments.fa-5x.text-center
+                      .panel-footer.text-center
+                        span.boder Xively
+                        .clearfix
+
+                  .col-md-5
+                    .panel.panel-default
+                      .panel-heading
+                        .row
+                          .col-md-12.text-center
+                            a(href="/channels/new/CommunityMailChannel?action=newChannel")
+                              //img(src="/images/CommunityMailChannel.png" height="90%")
+                              i.fa.fa-envelope-o.fa-5x.text-center(style="height: 94px;")
+                              br
+                      .panel-footer.text-center
+                        span.boder Community Mail
+                        .clearfix
+
+
+
+
+
+              .col-md-3
+                | &nbsp;
+    include ../includes/footer.jade

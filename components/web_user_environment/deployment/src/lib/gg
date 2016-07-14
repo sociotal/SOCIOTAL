@@ -1,0 +1,75 @@
+{
+  "contextElement": {
+    "id": "SocIoTal:SAN:WeatherStation:Dev_001",
+    "type": "urn:x-org:sociotal:resource:device",
+    "isPattern": "false",
+    "attributes": [
+      {
+        "name": "AmbientTemperature",
+        "value": "25.44",
+        "type": "http://sensorml.com/ont/swe/property/AmbientTemperature",
+        "metadatas": [
+          {
+            "name": "DateTimeStamp",
+            "value": "20141030T113343Z",
+            "type": "http://sensorml.com/ont/swe/property/DateTimeStamp"
+          },
+          {
+            "name": "Unit",
+            "value": "celsius",
+            "type": "http://purl.oclc.org/NET/ssnx/qu/qu#Unit"
+          },
+          {
+            "name": "accuracy",
+            "value": "0,25",
+            "type": "http://sensorml.com/ont/swe/property/QuantitativeAttributeAccuracy"
+          },
+          {
+            "name": "DataDescription",
+            "value": "float",
+            "type": "http://sensorml.com/ont/swe/property/DataDescription"
+          }
+        ]
+      },
+      {
+        "name": "HumidityValue",
+        "value": "59",
+        "type": "http://sensorml.com/ont/swe/property/HumidityValue",
+        "metadatas": [
+          {
+            "name": "DateTimeStamp",
+            "value": "20141030T113343Z",
+            "type": "http://sensorml.com/ont/swe/property/DateTimeStamp"
+          },
+          {
+            "name": "Unit",
+            "value": "percentage",
+            "type": "http://purl.oclc.org/NET/ssnx/qu/qu#Unit"
+          },
+          {
+            "name": "accuracy",
+            "value": "1",
+            "type": "http://sensorml.com/ont/swe/property/QuantitativeAttributeAccuracy"
+          },
+          {
+            "name": "DataDescription",
+            "value": "integer",
+            "type": "http://sensorml.com/ont/swe/property/DataDescription"
+          }
+        ]
+      },
+      {
+        "name": "Location",
+        "value": "43.472057, -3.800156",
+        "type": "http://sensorml.com/ont/swe/property/Location",
+        "metadatas": [
+          {
+            "name": "WorldGeographicReferenceSystem",
+            "value": "WGS84",
+            "type": "http://sensorml.com/ont/swe/property/WorldGeographicReferenceSystem"
+          }
+        ]
+      }
+    ]
+  }
+}

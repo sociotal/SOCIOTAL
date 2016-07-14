@@ -1,0 +1,201 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+
+  body
+    script(src='/js/sociotal/device.js')
+    script(src='/js/jquery.bootpag.min.js')
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+        script(type='text/javascript').
+
+            $(document).ready(function () {
+                listMyCommunitiesOnDevicesList();
+               //loadDevices('#{community_name}');
+            });
+
+        // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+             .col-xs-1
+                 i.fa.icon-generic_device.fa-5x
+
+              .col-xs-9
+                h1
+                  - if(params.action !== undefined && params.action === "newChannel")
+                    | Creating a new Channel, Step 2:
+                    br
+                    | select the device
+                  - else
+                    | Devices
+
+             - if(params.action === undefined )
+               .col-md-2.text-right
+                 a(href="/devices/new")
+                   button.btn.btn-primary.btn-circle.btn-lg(type='button' title="Add a new Device to the SocIoTal platform")
+                     i.fa.fa-plus
+
+          .row.page-header
+              .col-lg-12
+                  p.description
+                    | In this page you can find all your SocIoTal Communities and the associated Devices.
+                    | A Device can then be used creating a personal Channel linked to it.
+                    br
+                    - if(params.action !== undefined && params.action === "newChannel")
+                      | Clicking the icon &nbsp;
+                      i.fa.fa-link
+                      | &nbsp; in a Device box below links it to the Channel you're creating.
+                  .container
+          .row.page-header
+
+                .col-md-12.text-center
+                    #adv-search.input-group
+                        input.form-control(type='text', placeholder='Search for devices')
+                        .input-group-btn
+                            .btn-group(role='group', style='display: flex !important;')
+                                .dropdown.dropdown-lg(style='position: static !important;')
+                                    button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false', style='border-radius: 0; margin-left: -1px;')
+                                        span.caret
+                                    .dropdown-menu.dropdown-menu-right(role='menu', style='margin-top: -1px;padding: 6px 20px; min-width: 500px;')
+                                        form.form-horizontal(role='form')
+                                            .form-group
+                                                label(for='filter') Filter by attributes
+                                                .row
+                                                    each attr, i in attributes
+                                                        .col-sm-4
+                                                            span
+                                                                input(type="checkbox" name="search-attributes[]" value="#{attr}")
+                                                                |  #{attr}
+                                            //.form-group
+                                            //    label(for='contain') Deployment
+                                            //    input.form-control(type='text')
+                                            //.form-group
+                                            //    label(for='contain') Contains the attributes
+                                            //    input.form-control(type='text', style='border-top-left-radius: 4px;border-bottom-left-radius: 4px;')
+                                            button.btn.btn-primary(type='button', onclick="search()", style ='border-top-left-radius: 4px;border-bottom-left-radius: 4px;')
+                                                span.text-right  Discovery Devices
+                                button.btn.btn-primary(type='button', onclick="search()")
+                                    span.glyphicon.glyphicon-search(aria-hidden='true')
+
+
+          .row
+            h3(style="color:grey;")
+                | Communities and Devices found:
+                //span(id="devices-count") &nbsp; 0
+            hr
+            div(id="devices-container" style="text-align:center")
+          .row
+            nav.pull-right
+                ul(id="paginator").pagination
+
+          .row
+              div(id="device-container-default")
+                    //- if (devices.length == 0)
+                    //    .alert.alert-warning.alert-dismissible.fade.in(role='alert')
+                    //        button.close(type='button', data-dismiss='alert', aria-label='Close')
+                    //            span(aria-hidden='true') &times;
+                    //        strong Warning!
+                    //            p= error
+
+
+                // discovery part:
+                - each device in devices
+                  .col-lg-4.col-md-6
+                    .panel.panel-green
+                      .panel-heading
+                        .row
+                          .col-xs-3
+                                i.fa.icon-generic_device.fa-4x
+                            .col-xs-9.text-right
+                              div.h4
+                                - var devicename = device.id.split(":")[device.id.split(":").length-1];
+                                - if(devicename >= 25)
+                                    a(href='/devices/'+device.id, style="color:white;")= devicename.substr(0, 25)
+                                - else
+                                    a(href='/devices/'+device.id, style="color:white;")= devicename
+
+                              div
+                                b= device.type.split(":")[device.type.split(":").length-1]
+                              div
+                                span= device.id.split(":")[1]
+                      a(href='#')
+                        .panel-footer
+                          span.pull-left
+                                a(href='/devices/'+device.id) View Details
+                          span.pull-right
+                            - var action = (params.action !== undefined && params.action === "newChannel") ? "&action=newChannel" : "";
+                            a(href='/channels/new/SocIoTalChannel?context_id='+device.id + "&context_type=" + device.type + "" + action)
+                                i.fa.fa-link.fa-2x
+                          .clearfix
+            .row
+                div(id="communities-container-default" )
+                    .row(style="text-align:center")
+                        img(id="loader" src="images/loader.gif" style="width:64px;")
+
+
+        script(type='text/x-jquery-tmpl', id='devices-template')
+          .col-lg-3.col-md-4
+            .panel.panel-green
+              .panel-heading
+                .row
+                  .col-xs-3
+                        i.fa.icon-generic_device.fa-3x
+                  .col-xs-9.text-right
+                    div.h4
+                      //a(href='/devices/'+"${id}", style="color:white;")  ${id.split(":")[id.split(":").length-1]}
+                      a(href='/devices/${id}?community_name=${community_name}', style="color:white;")  ${name}
+                    div
+                      b
+                        ${type.split(":")[type.split(":").length-1]}
+                    div
+                      ${id.split(":")[1]}
+              .panel-footer
+                span.pull-left
+                  a(href='/devices/${id}?community_name=${community_name}') View Details
+                span.pull-right
+                  a(href='/channels/new/SocIoTalChannel?context_id='+"${id}" + "&dev_type=" + "${type}" + "&community_name="+"${community_name}")
+                    i.fa.fa-link.fa-2x
+                .clearfix
+
+
+
+
+
+        script(type='text/x-jquery-tmpl', id='community-template')
+
+            .row
+                .col-md-7
+                    .col-md-1
+                        i.fa.fa-users.fa-3x(style="color:#515151")
+
+                    .col-md-6
+                        div
+                            a.conn-link(style="color:#000000", href='/communities/' + "${id}" + '?name=' + "${name}")
+                                {{if name == "0C"}}
+                                b= 'General Community (${count})'
+                                {{else}}
+                                b= '${name} (${count})'
+                                {{/if}}
+
+                        div
+                            span(style="color:#BEBEBE")= '${description}'
+            .row
+                div
+                    span(id="community_message", style="color:#BEBEBE")
+            br
+            .row
+                div(id="devices-container-${name}" style="text-align:center")
+            br
+            hr
+
+
+
+
+
+
+    include ../includes/footer.jade

@@ -1,0 +1,15 @@
+doctype html
+html(lang='en')
+  head
+    include ./includes/head.jade
+    
+  body           
+      .row.align-middle
+        .col-md-6.col-md-offset-3.text-center
+           p.error-code 500
+           p.description= "OOOPSS! Something wrong happened on our servers."          
+           p.description= "Don't be scared. Maybe due to a temporary problem, retry later."
+           br
+           br
+           p.description
+            a(href="/") Just return home

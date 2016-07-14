@@ -1,0 +1,259 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header
+        include ../../includes/sidebar
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              img.pull-left(src="/images/SocIoTalChannel.png" style="height:60px; margin-right: 25px")
+              span
+              h1.pull-left MyChannel
+
+            .col-md-2.text-right
+              button.btn.btn-primary.btn-circle.btn-lg(type='button')
+                i.fa.fa-pencil
+              span &nbsp;
+              button.btn.btn-danger.btn-circle.btn-lg(type='button')
+                i.fa.fa-times
+
+          .row
+            .col-lg-12
+                p.description= "Below you can find all the details about this Channel: general info, produced data and the listing of all the connections to other Channels."
+
+          //.row.page-header
+          //  .col-lg-12
+          //    h3 Some head
+
+          .row
+            .col-md-10
+              // channel info table
+              .col-md-6
+                .panel.panel-default
+                  .panel-heading
+                    | Channel info
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table
+                        tbody
+                          tr
+                            td Author
+                            td
+                              a(href="#") UserTest
+                          tr
+                            td Type
+                            td SocIoTalChannel
+                          tr
+                            td SocIoTal ID
+                            td
+                              a(href="#") SocIoTal:CRS4:smartphone:mysmartphone
+                          tr
+                            td Date
+                            td Nov 26, 2015
+
+
+              // channel attributes table
+              .col-md-6
+                .panel.panel-default
+                  .panel-heading
+                    span.pull-left
+                      | Attributes
+                    span.pull-right
+                      button.btn.btn-primary.btn-circle.pull-right(type='button')
+                        i.fa.fa-list
+                    .clearfix
+
+
+
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table
+                        tbody
+                          tr
+                            td AmbientTemperature
+                          tr
+                            td Humidity
+                          tr
+                            td Location
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    | Data
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table.table-striped.table-bordered.table-hover
+                        thead
+                          tr
+                            th #
+                            th Date
+                            th Type
+                            th Value
+                            th Unit
+                        tbody
+                          tr
+                            td 1
+                            td 24/11/2015, 10:57:38
+                            td AmbientTemperature
+                            td 25.44
+                            td @
+                          tr
+                            td 2
+                            td 24/11/2015, 10:57:38
+                            td HumidityValue
+                            td 59
+                            td @
+                          tr
+                            td 3
+                            td 24/11/2015, 10:57:38
+                            td Location
+                            td 43.472057, -3.800156
+                            td @
+                    .row
+                      .col-sm-6
+                      .col-sm-6.pull-right
+                          ul.pagination.pull-right
+                            li#dataTables-example_previous.paginate_button.previous.disabled(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') Previous
+                            li.paginate_button.active(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 1
+                            li.paginate_button(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 2
+                            li.paginate_button(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 3
+                            li.paginate_button(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 4
+                            li.paginate_button(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 5
+                            li.paginate_button(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') 6
+                            li#dataTables-example_next.paginate_button.next(aria-controls='dataTables-example', tabindex='0')
+                              a(href='#') Next
+
+
+
+          .row.page-header
+            .col-lg-10
+              h3 This channel is connected to...
+
+            .col-md-2.text-right
+              button.btn.btn-primary.btn-circle(type='button')
+                i.fa.fa-plus
+
+          .row
+            .col-lg-12
+              .col-lg-3.col-md-6
+                .panel.panel-primary
+                  .panel-heading
+                    .row
+                      .col-xs-3
+                        i.fa.fa-terminal.fa-5x
+                      .col-xs-9.text-right
+                        div
+                          h3 MyDebug
+                        div ...some text
+                  a(href='#')
+                    .panel-footer
+                      span.pull-left
+                        a(href="channels/channel_id") View Details
+                      .clearfix
+
+              .col-lg-3.col-md-6
+                .panel.panel-primary
+                  .panel-heading
+                    .row
+                      .col-xs-3
+                        i.fa.fa-mobile.fa-5x
+                        //img(src='http://sociotal.crs4.it/img/DebugChannel.png', style='height:70px')
+                      .col-xs-9.text-right
+                        div
+                          h3 MyIphone6S
+                        div ...some text
+                  a(href='#')
+                    .panel-footer
+                      span.pull-left View Details
+                      .clearfix
+
+          .row
+            .col-lg-12
+
+.modal.fade(id="myModal-subscription", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.btn.close(type="submit", data-dismiss="modal" aria-hidden="true") &times;</button>
+        h4.modal-title(id="myModalLabel") Subscription
+
+        //input(type="hidden", id="modal-metadata-mode", value="new")
+        //input(type="hidden", id="modal-metadata-id", value="new")
+        //input(type="hidden", name="_csrf", id="_csrf", value="#{csrf_token}")
+        //input(type='hidden', name='channelId', id="channelId" value="#{channel._id}")
+        //input(type='hidden', name='channelType', id="channelType" value="#{channel.channel_type}")
+        //input(type='hidden', name='modal-sub-sensor-id', id="modal-sub-sensor-id" value="#{channel.contextId}")
+        //input(type='hidden', name='modal-sociotal-device-id', id="modal-sociotal-device-id" value="#{channel.contextType}")
+
+
+
+  .modal-body
+    div(id="modal-debug")= ""
+    //.row
+    //    .col-md-3
+    //        p= "ID"
+    //    .col-md-6 #{channel.contextId}
+    //br
+
+    .row
+      .col-md-3
+        p= "Attribute"
+      .col-md-6(id="modal-sub-attributes" )
+
+    br
+
+    .row
+      .col-md-6
+        h4.modal-title(id="myModalLabel") CONDITION:
+
+    br
+
+    .row
+      .col-md-3
+        p= "Type"
+      .col-md-6
+        select.form-control(id="modal-sub-types" onchange="showCondition(this)")
+    br
+    .row(id="modal-condvalues-attr-box")
+      .col-md-3
+        p= "Attribute"
+      .col-md-6(id="modal-sub-condition-attribute" )
+
+    br
+    .row(id="modal-condvalues-intervall-box")
+      .col-md-3
+        p= "Intervall"
+      .col-md-6
+        select.form-control(id="modal-cond-values-intervall" )
+        //input.form-control(id="modal-sub-condition-intervall" type="text")
+    br
+
+
+
+    .modal-footer
+    button.btn.btn-default(data-dismiss="modal") Close
+    button.btn.btn-primary(onclick="subscr.subscribe()") Save
+
+          // /.row
+        // /.container-fluid
+      // /#page-wrapper
+    // /#wrapper
+    include ../../includes/footer

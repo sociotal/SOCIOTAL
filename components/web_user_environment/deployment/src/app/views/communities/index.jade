@@ -1,0 +1,96 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+  body
+    script(src='/js/sociotal/community.js')
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+        script(type='text/javascript').
+          $(document).ready(function () {
+            listMyCommunities();
+          });
+
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+                h1 Communities
+              .col-md-2.text-right
+                a(href="/communities/new" title="")
+                  button.btn.btn-primary.btn-circle.btn-lg(type='button' title="Create a new community")
+                    i.fa.fa-plus
+
+          .row
+            .col-lg-12
+              p.description= "A Community provides a closed environment where only registered users can share information. In this page you can find the list of communities you belong to and all the existing SocIoTal Communities."
+
+
+
+
+          .row.page-header
+            .col-lg-12
+                h3(id="my_communities_title" style="color:grey;") My Communities
+          .row
+            div(id="my-communities-container-default")
+            .row(style="text-align:center")
+                img(id="loader" src="images/loader.gif" style="width:64px;")
+            p.description(id="my_communities_description")
+
+
+
+
+          .row.page-header
+            .col-lg-11
+              - if (channels !== undefined)
+                h3(style="color:grey;") SocIoTal Communities
+              - else
+                h3(style="color:grey;") SocIoTal Communities (#{communities.length})
+
+          .-row
+            div(id="communities-container-default")
+              - if (communities.length == 0)
+                | No communities present in our system. &nbsp;
+                a(href="/communities/new" title="") Create
+
+              - each community in communities
+                .col-lg-4.col-md-6
+                  .panel.panel-red
+                    .panel-heading
+                      .row
+                        .col-xs-3
+                          i.fa.fa-users.fa-3x
+                        .col-xs-9.text-right
+                          div
+                            a.conn-link(style="color:#ffffff", href='/communities/show?community_name=' + community.name)
+                              b= community.name
+                          div
+                            span(style="color:#ffffff; overflow:hidden; text-overflow:ellipsis; width:100px; white-space:nowrap; ")= community.description
+
+          .clearfix
+
+
+
+    script(type='text/x-jquery-tmpl', id='community-template')
+
+      .col-lg-4.col-md-6
+        .panel.panel-red
+          .panel-heading
+            .row
+              .col-xs-3
+                i.fa.fa-users.fa-3x
+              .col-xs-9.text-right
+                div
+                  a.conn-link(style="color:#FFFFFF", href='/communities/show?community_name=' + "${name}")
+                    b= '${name}'
+
+                div
+                  span(style="color:#ffffff; overflow:hidden; text-overflow:ellipsis; width:100px; white-space:nowrap; ")= '${description}'
+                  span= ddd
+                  br
+    include ../includes/footer.jade

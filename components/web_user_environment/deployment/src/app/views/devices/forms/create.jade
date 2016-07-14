@@ -1,0 +1,266 @@
+doctype html
+html(lang='en')
+    head
+        include ../../includes/head.jade
+
+    script(type="text/javascript" src="/js/validate.min.js")
+    body
+        //script(src='/js/sociotal/community.js')
+        script(src='/js/sociotal/device.js')
+        script(type='text/javascript').
+            $(document).ready(function(){
+                var mode = "#{mode}";
+                var type = "#{device.type}";
+                var attrs = "#{device.attributes}";
+                var device = "#{device}";
+                var device_obj = !{JSON.stringify(device)};
+                var ownerID = "#{ownerID}";
+                var device_list = "#{device_list}";
+                //var device_list_obj = !{JSON.stringify(device_list)}
+
+
+                //if(type == "urn:x-org:sociotal:resource:bubble" || type == "urn:x-org:sociotal:resource:generic"
+                //        || type == "urn:x-org:sociotal:resource:weatherstation") {
+                $('#new_attribute_button').show();
+                var templatesAttributes = $.parseJSON($('#templates-attributes').val());
+                    templatesAttributes.forEach(function(attribute){
+                        $('#templates-item-attribute').tmpl(attribute).appendTo('#templates-box-attributes');
+                        console.log(attribute);
+                });
+                    /*
+                    device_list_obj.forEach(function (entity) {
+                        $('#templates-item-entity').tmpl(entity).appendTo('#templates-box-entities');
+                        console.log(entity);
+                        $('#entities').val(JSON.stringify(device_list_obj));
+                    });
+                     */
+                //}
+                //else {
+                //    $('#new_attribute_button').hide();
+                //}
+
+                if(mode == "new") {
+                    $('#delete-btn').hide();
+                    $('#project').val("#{device.project}");
+                    $('#deployment').val("#{device.deployment}");
+                    $('#id').val("#{device.id}");
+                    $('#type').val("#{device.type}");
+
+                    attrs = device_obj.attributes;
+
+                    console.log("attrs are"+ JSON.stringify(attrs));
+
+                    if(attrs != null && attrs.length > 0){
+                        attrs.forEach(function(attribute){
+                            $('#attributes-template').tmpl(attribute).appendTo('#attributes-list');
+                        });
+                        $('#attributes').val(JSON.stringify(attrs));
+                    }
+                    $('#Owner_value').val(ownerID);
+                    $('#Owner_panel').hide();
+
+                    listMyCommunitiesOnDevicesCreation();
+
+
+                } else {
+                    type = "#{device.type}";
+                    $('#title').val("#{device.id.split(":")[device.id.split(":").length-1]}");
+                    $('#project').val("#{device.id.split(":")[0]}");
+                    $('#deployment').val("#{device.id.split(":")[1]}");
+                    $('#ID').val("#{device.id}");
+                    $('#type').val("#{device.type}");
+
+                    $('#title').attr("readonly", true)
+                    $('#ID').attr("readonly", true)
+                    $('#project').attr("readonly", true)
+                    $('#deployment').attr("readonly", true)
+                    $('#type').attr("readonly", true)
+
+                    $('#delete-btn').show();
+                    $('#attributes-list').text('');
+                    $('#owner_panel').hide();
+                    attrs = device_obj.attributes;
+
+                    console.log(attrs.length);
+
+                    if(attrs.length > 0){
+                        attrs.forEach(function(attribute){
+                            $('#attributes-template').tmpl(attribute).appendTo('#attributes-list');
+                        });
+                        $('#attributes').val(JSON.stringify(attrs));
+                    }
+
+                }
+            });
+
+            $(".modal-wide").on("show.bs.modal", function() {
+                var height = $(window).height() - 200;
+            $(this).find(".modal-body").css("max-height", height);
+            });
+
+
+        script(src='/js/sociotal/device.js')
+        #wrapper
+            // Navigation
+            nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+                include ../../includes/header.jade
+                include ../../includes/sidebar.jade
+            // Page Content
+            #page-wrapper
+                .container-fluid
+                    .row.page-header
+                        .col-xs-1
+                            i.fa.icon-generic_device.fa-5x
+                        .col-xs-9
+                            - if (mode == "new")
+                                h1 Creating a new Device, Step 2: Fill the form
+                            - else
+                                h1.pull-left(id="pageTitle") #{device.title}
+
+                    .row.page-header
+                        .col-lg-12
+                            p.description
+                                | Filling the form below allows you to add a new Device in the SocIoTal platform.
+                    .row
+                        .col-lg-9.col-centered
+                            .panel.panel-default
+                                .panel-heading Device details
+                                .panel-body.body
+
+                                    form.form-horizontal(id="device-form", method="post", action=action, enctype="multipart/form-data", role="form")
+                                        .row
+                                        .col-md-5
+                                            input(type="hidden", name="_csrf", value="#{csrf_token}")
+                                            input(type="hidden", name="channel_type", value="#{channel_type}")
+                                            input(type="hidden", id="templates-obj", value="#{JSON.stringify(templates)}")
+                                            input(type="hidden", id="templates-attributes", value="#{JSON.stringify(templatesAttributes)}")
+                                            input(type="hidden", id="ownerID", value="#{ownerID}")
+
+
+
+                                            .form-group
+                                                .alert.alert-danger.hidden
+                                                label Entity Name
+                                                input.form-control#title(type='text', name="title", value="", placeholder='Enter title for the device', onchange="createID()")
+                                            .form-group
+                                                label ID
+                                                input.form-control#ID(type='text', name="contextId", placeholder='project:deployment:typeOfEntity:EntityID')
+                                            .form-group
+                                                label Project
+                                                input.form-control#project(type='text', name="project",  placeholder='Enter the project name ', onchange="createID()")
+                                            .form-group
+                                                label Deployment
+                                                input.form-control#deployment(type='text', name="deployment", placeholder='Enter the deployment location ', onchange="createID()")
+                                            .form-group
+                                                label Context Type
+                                                input.form-control#type(type='text', name="type",  placeholder='Enter the Context type ', onchange="createID()")
+                                            .form-group
+                                                label Community
+                                                select.form-control#myCommunities
+                                                    option(value="0C") 0C - ALL
+
+
+
+                                            //- if(device.type === "urn:x-org:sociotal:resource:bubble")
+                                            //    .form-group
+                                            //        label Identities
+                                            //        .row
+                                            //            .col-md-6
+                                            //                select.form-control(id="identity-attribute-name")
+                                            //                    option(value="") select an attribute
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:domain") domain
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:department") department
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:streetAddress") streetAddress
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:locality") locality
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:postalCode") postalCode
+                                            //                    option(value="urn:ietf:params:scim:schemas:core:2.0:country") country
+                                            //
+                                            //            .col-md-6
+                                            //                input.form-control(id="identity-attribute-value", type='text')
+
+
+
+
+
+                                        .col-md-7
+                                            .panel-body.body
+                                                .form-group
+                                                    label.col-sm-5.control-label.v-right(for='tags') Attributes
+                                                    button.btn.btn-primary.btn-circle(type='button', id="new_attribute_button",  title="Add attribute", onclick="setModal('new')")
+                                                        i.fa.fa-plus
+                                                    input(type='hidden', id='attributes' value='[]')
+                                                    input(type='hidden', id='attribute-current-id' value='')
+                                                    input(type='hidden', id='attribute-modal-mode' value='')
+                                                div.panel-group(id="attributes-list")
+
+
+                                        .row
+                                        button.btn.btn-primary(type='button', onclick="saveDevice()") Save
+                                        | &nbsp;
+                                        a.btn.btn.btn-default(href='/devices', title="cancel") Cancel
+                                        | &nbsp;
+
+
+
+    //div.modal.modal-wide.fade(id="templates", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+    //    div.modal-dialog
+    //        div.modal-content
+    //            div.modal-header
+    //                button.btn.close(type="button", data-dismiss="modal" aria-hidden="true") &times;</button>
+    //                h2.modal-title(id="myModalLabel") Select a template
+    //            div.modal-body(id="templates-box")
+
+    div.modal.fade(id="myModal-attribute", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+        div.modal-dialog.modal-lg
+            div.modal-content
+                div.modal-header
+                    button.btn.close(type="button", data-dismiss="modal" aria-hidden="true") &times;</button>
+                    h2.modal-title(id="myModalLabel") Select an attribute
+                div.modal-body(id="templates-box-attributes")
+
+    ////loads the name in the modal box:
+    //script(type='text/x-jquery-tmpl', id='templates-item')
+    //    div.col-xs-6.col-md-3.v-center
+    //        a.thumbnail.content(onclick="loadTemplateV2('${type}')" )
+    //            div.caption
+    //                h4 ${name}
+
+    //loads the name in the modal box:
+    script(type='text/x-jquery-tmpl', id='templates-item-attribute')
+        div.col-xs.col-md-4.v-center
+            a.thumbnail.content(onclick="selectAttributes('${name}')" )
+                div.caption(style='text-align:center;')
+                    h5 ${name}
+
+
+    //script(type='text/x-jquery-tmpl', id='metadata-form-template')
+    //    div.row
+    //        .col-md-3
+    //            input.form-control(type='text', name="metadata[${index}][name]", id="metadata_${index}_name",  value="${name}", placeholder='Name')
+    //        .col-md-3
+    //            input.form-control(type='text', name="metadata[${index}][type]", id="metadata_${index}_type", value="${type}", placeholder='Type')
+    //        .col-md-3
+    //            input.form-control(type='text', name="metadata[${index}][value]",id="metadata_${index}_value",  value="${value}", placeholder='Value')
+    //        br
+
+    script(type='text/x-jquery-tmpl', id='attributes-template')
+        div.panel.panel-default(id="${name}_panel")
+            div.panel-heading
+                .row
+                    .col-md-5
+                        span ${name}
+                        span ${id}
+                        // input(type="hidden", name="data", id="${name}_value",  value="", placeholder=' ')
+                    .col-md-6
+                        input.form-control(type="text", name="${name}_value", id="${name}_value", value = "", placeholder="${value}")
+
+                        //input(type="text", name="default_value", placeholder=" ${value}")
+                    .col-md-1
+                        a(href='#', role='button', title='Delete attribute', data-dismiss='modal', aria-label='Delete', data-placement='top', onclick="deleteAttribute('${name}', true)")
+                            i.fa.fa-times(style='color: #d43f3a')
+
+
+
+
+
+    include ../../includes/footer.jade

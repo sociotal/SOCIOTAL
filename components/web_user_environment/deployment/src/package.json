@@ -1,0 +1,56 @@
+{
+  "name": "Sociotal_UserEnv",
+  "description": "",
+  "keywords": [],
+  "version": "5.0.1",
+  "private": false,
+  "author": "CRS4",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development CM=v1 ./node_modules/.bin/nodemon server.js",
+    "test": "./node_modules/.bin/mocha --reporter spec --timeout 20000 test/*.js"
+  },
+  "dependencies": {
+    "agenda": "^0.6.24",
+    "ascoltatori": "0.15.0",
+    "async": "^0.7.0",
+    "body-parser": "1.15.0",
+    "bootpag": "^1.0.7",
+    "connect-flash": "0.1.1",
+    "connect-mongo": "0.4.1",
+    "debug": "^2.2.0",
+    "express": "3.5.0",
+    "express-validator": "^2.17.1",
+    "gcm": "^1.0.1",
+    "imager": "0.2.4",
+    "jade": "1.3.1",
+    "java": "0.6.1",
+    "lodash": "^4.6.1",
+    "mongodb": "^2.0.48",
+    "mongoose": "3.8.x",
+    "mongoose-schema-extend": "0.2.0",
+    "nodemailer": "1.7.0",
+    "nodemailer-smtp-transport": "1.0.3",
+    "notifier": "0.1.5",
+    "passport": "0.2.0",
+    "passport-facebook": "1.0.3",
+    "passport-http-bearer": "1.0.1",
+    "passport-local": "1.0.0",
+    "pem": "^1.8.1",
+    "request": "^2.65.0",
+    "serve-favicon": "2.3.0",
+    "socket.io": "0.9.16",
+    "uuid": "^2.0.1",
+    "view-helpers": "0.1.4",
+    "winston": "0.7.3"
+  },
+  "devDependencies": {
+    "supertest": "0.12.1",
+    "should": "3.3.1",
+    "mocha": "1.18.2",
+    "nodemon": "1.0.19"
+  }
+}

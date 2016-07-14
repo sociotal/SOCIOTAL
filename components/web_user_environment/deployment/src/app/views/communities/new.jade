@@ -1,0 +1,51 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+    script(src='/js/sociotal/community.js')
+
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+    #page-wrapper
+      .container-fluid
+        .row.page-header
+          .col-xs-1
+            i.fa.fa-users.fa-5x
+          .col-xs-9
+            h1 Creating a new Community, Fill the form
+        .row.page-header
+          .col-lg-12
+            p.description
+              | Filling the form below allows you to add a new Community of users in the SocIoTal platform.
+        .row
+          .col-lg-6.col-centered
+            .panel.panel-default
+              .panel-heading Community details
+              .panel-body.body
+                form.form-horizontal(id="device-form", method="post", action=action, enctype="multipart/form-data", role="form")
+                  .row
+                  .col-md-12
+                    input(type="hidden", name="_csrf", value="#{csrf_token}")
+                    .form-group
+                      .alert.alert-danger.hidden
+                      label Community Name
+                      input.form-control#name(type='text', name="name", value="", placeholder='Enter name for the community')
+                    .form-group
+                      label Description
+                      input.form-control#description(type='text', name="description", placeholder='Enter description for the community')
+
+                  .row
+                  button.btn.btn-primary(type='button', onclick="saveCommunity()") Save
+                  | &nbsp;
+                  a.btn.btn.btn-default(href='/communities', title="cancel") Cancel
+                  | &nbsp;
+
+
+
+              .col-md-3
+                | &nbsp;
+    include ../includes/footer.jade

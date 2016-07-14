@@ -1,0 +1,85 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='description', content='')
+        meta(name='author', content='')
+        link(rel='shortcut icon', href='#{pathToAssets}/assets/ico/favicon.png')
+        title Reset password
+        // Bootstrap core CSS
+        link(href='/startbootstrap/bower_components/bootstrap/dist/css/bootstrap.css', rel='stylesheet')
+        link(href='/css/social-sharing.css', rel='stylesheet')
+        // Custom styles for this template
+        link(href='/css/signin.css', rel='stylesheet')
+        link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", rel="stylesheet")
+
+
+
+    body(style="background-image: url('/images/bg.jpeg'); background-repeat: no-repeat; background-size: 100%;")
+
+
+        .container
+            - if(act_match)
+                form.form-signin(action="/users/password/reset", method="post", role="form", style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo_login.png", style=" border: 0px solid #000")
+
+                    - if(message)
+                        div.alert.alert-danger= message
+                    input#email.form-control(type="hidden", name="email" value="#{email}")
+                    input#username.form-control(type="hidden", name="username" value="#{username}")
+                    h4 Please, enter a New Password
+                    //input#pre_pass.form-control(type='password', name="pre_pass", placeholder='Previous password')
+                    input#new_pass.form-control(type='password', name="new_pass", placeholder='password')
+
+                    br
+                    button.btn.btn-primary(type='submit') Send Reset
+
+                    hr(style="border: 1px solid #000")
+                    a.show-signup(href="/login") Log In
+                    | &nbsp; or &nbsp;
+                    a.show-signup(href="/signup") Sign up
+                    br
+                    br
+
+            - else if(act_mail)
+                form.form-signin(style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo.png", style=" border: 0px solid #000")
+                    .foo
+                        p
+                            | An email has been sent to
+                            b  #{email}
+                            |  with further instructions. <br>Please check your mail and click the included link to reset your password. <br>
+                            br
+                            | <a href="/login">Log In</a>
+
+
+            - else if(act_reseted)
+                form.form-signin(style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo.png", style=" border: 0px solid #000")
+                    .foo
+                    p
+                    div.alert.alert-success Your password has been reset and now you're logged in.
+                        br
+                        a.show-signup(href="/login") Continue to your account
+
+            - else
+                form.form-signin(action="/users/password/email", method="post", role="form", style="background-color: #eee; border: 0px solid #000")
+                    img(src="/images/sociotal_logo_login.png", style=" border: 0px solid #000")
+
+                    - if(message)
+                        div.alert.alert-danger= message
+
+                    h4 Forgot password? Don't worry, enter here the email address associated to your account
+                    input#email.form-control(type="email", placeholder="Email", name="email")
+                    br
+                    button.btn.btn-primary(type='submit') Send Reset
+
+                    hr(style="border: 1px solid #000")
+                    a.show-signup(href="/login") Log In
+                    | &nbsp; or &nbsp;
+                    a.show-signup(href="/signup") Sign up
+            br
+            br
+
+

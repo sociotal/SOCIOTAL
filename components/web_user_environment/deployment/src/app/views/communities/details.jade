@@ -1,0 +1,105 @@
+doctype html
+html(lang='en')
+    head
+        include ../includes/head.jade
+    body
+        script(src='/js/sociotal/community.js')
+
+    #wrapper
+        // Navigation
+        nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+            include ../includes/header.jade
+            include ../includes/sidebar.jade
+        // Page Content
+        #page-wrapper
+            .container-fluid
+                .row.page-header
+                    .col-lg-10
+                        .col-xs-1
+                            i.fa.fa-group.fa-4x
+                        .col-xs-9.text-left
+                            h1.pull-left #{community.name}
+                    .col-md-2.text-right
+                        span &nbsp;
+                        input(type="hidden", id="owner", value="#{JSON.stringify(community.contact)}")
+
+                        - if(owner)
+                            span &nbsp;
+                            button.btn.btn-danger.btn-circle.btn-lg(type='button' title="Delete" data-toggle="tooltip" data-placement="top", onclick="deleteCommunity('#{community.id}', '#{community.name}')")
+                                i.fa.fa-times
+                        - else
+                            button.btn.btn-primary.btn-circle.btn-lg(type='button' id="affiliate" title="join community" data-toggle="tooltip" data-placement="top", onclick="affiliateCommunity('#{community.id}')")
+                                i.fa.fa-users
+
+                            button.btn.btn-danger.btn-circle.btn-lg(type='button' id="revoke" title="leave community" data-toggle="tooltip" data-placement="top", onclick="revokeAffiliation('#{community.id}', '#{community.name}')")
+                                i.fa.fa-users
+                .row
+                    .col-lg-12
+                        p.description= "Below you can find all the details about this Community"
+                hr
+                .row
+                    .col-md-10
+                        .col-md-6
+                            .panel.panel-default
+                                .panel-heading
+                                    | Community info
+                                .panel-body
+                                    .table-responsive
+                                        table.table
+                                            tbody
+                                                //tr
+                                                //    td Community Name
+                                                //    td #{community.name}
+                                                tr
+                                                    td Owner
+                                                    td #{community.contact.name}
+                                                //tr
+                                                //    td ID
+                                                //    td #{community.id}
+
+                                                tr
+                                                    td Description
+                                                    td #{community.description}
+
+                                                tr
+                                                    td Domain
+                                                    td #{community.domain_id}
+
+
+
+                script(type='text/javascript').
+
+                    $(document).ready(function () {
+                        $("#revoke").hide();
+                        $("#affiliate").hide();
+                        listMembers("#{community.name}", "#{message}");
+                    });
+
+                .row
+                    .col-lg-12
+                        .col-md-10
+                            .panel.panel-default
+                                .panel-heading
+                                    .col-lg-10
+                                        | Members
+                                    .clearfix
+
+                                .panel-body
+                                    input(type="hidden" id="entities-list" value="")
+                                    div(id="members-container")
+                                        .row(style="text-align:center")
+                                            img(id="loader" src="/images/loader.gif" style="width:64px;")
+
+script(type='text/x-jquery-tmpl', id='members-template')
+    .col-sm-3
+        .panel.panel-primary
+            .panel-heading
+                .row
+                    .col-xs-3
+                        i.fa.fa-user.fa-3x
+                    .col-xs-9.text-right
+                        div.h5
+                            ${name}
+                        div
+                            ${role}
+

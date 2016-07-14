@@ -1,0 +1,60 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+                h1 Smartphones
+
+
+          .row
+            .col-lg-12
+              p.description= "Here is a list of all your registered Smartphones. A Smartphone is a special type of SocIoTal Channel and can be registered through the SocIoTal mobile app."
+
+          .row.page-header
+            .col-lg-12
+              - if (phones !== undefined)
+                 h3(style="color:grey;") Registered Smartphones (#{phones.length})
+              - else
+                 h3(style="color:grey;") Registered Smartphones (0)
+
+          .row
+            .col-lg-12
+              - if (phones !== undefined)
+              -   each phone in phones
+                    .col-lg-4.col-md-6
+                      .panel.panel-yellow
+                        .panel-heading
+                          .row
+                            .col-xs-3
+                              i.fa.fa-mobile-phone.fa-5x
+
+                            .col-xs-9.text-right
+                              .h3
+                                a(href="channels/#{phone._id}" style="color: white") #{phone.title}
+                              div #{phone.channel_type}
+                        a(href='#')
+                          .panel-footer
+                            span.pull-left
+                              a(href="channels/#{phone._id}") View Details
+                            span.pull-right
+                              a(href="channels/#{phone._id}")
+                                i.fa.fa-arrow-circle-right
+                            .clearfix
+
+
+            // /.col-lg-12
+          // /.row
+        // /.container-fluid
+      // /#page-wrapper
+    // /#wrapper
+    include ../../includes/footer.jade

@@ -1,0 +1,42 @@
+SocIoTal Web UserEnv UI TESTING
+===============================
+
+This folder contains **all the UI Tests**, using Nightwatch and Selenium
+(through default Firefox driver).
+All tests are under the `tests` dir.
+
+
+REQUIREMENTS
+============
+
+OS X (or Linux)
+java >= 6
+Firefox
+node.js v4.2.x
+Nightwatch installed in the current `UI` dir, run: npm install nightwatch
+
+
+CONFIGURATION
+=============
+Configuration file is `nightwatch.json` and it defines 3 testing environments:
+  - `default` config points to lbsdev
+  - `production` config to sociotal.crs4.it
+  - `local` to for localhost
+
+
+
+RUNNING
+============
+node runUITests.js <ENVIRONMENT>
+
+where <ENVIRONMENT> is `default` or `production` or `local`.
+If no environment is passed `default` is used.
+
+E.g.,
+
+node runUITests.js
+node runUITests.js production
+node runUITests.js local
+
+
+Reports will be placed on the console in the `reports` directory.

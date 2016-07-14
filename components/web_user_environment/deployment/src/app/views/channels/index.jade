@@ -1,0 +1,71 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+                h1 Channels
+              .col-md-2.text-right
+                a(href="/channels/new" title="")
+                  button.btn.btn-primary.btn-circle.btn-lg(type='button' title="Create a new, personal Channel linked to a SocIoTal Device")
+                    i.fa.fa-plus
+
+          .row
+            .col-lg-12
+              p.description= "A Channel is like a personal link to a real SocIoTal Device. Creating a Channel, based on a specific Device, allows to manage it and gather and view the data it produces."
+
+          .row.page-header
+            .col-lg-12
+              - if (channels !== undefined)
+                h3(style="color:grey;") Created Channels (#{channels.length})
+              - else
+                h3(style="color:grey;") Created Channels (0)
+
+          .row
+            .col-lg-12
+              - if (channels !== undefined)
+              -   each channel in channels
+                    - if(channel.channel_type !== "PhoneChannel")
+                      .col-lg-4.col-md-6
+                        .panel.panel-primary
+                          .panel-heading
+                            .row
+                              .col-xs-3
+                                - if (channel.channel_type === "DebugChannel")
+                                    i.fa.fa-terminal.fa-5x
+                                - else if (channel.channel_type === "CommunityMailChannel")
+                                    i.fa.fa-envelope-o.fa-5x
+                                - else
+                                    img(src="/images/#{channel.channel_type}.png", height="70px")
+                              .col-xs-9.text-right
+                                .h3
+                                  - if(channel.title.length >= 15)
+                                      a.conn-link(href="channels/#{channel._id}") #{channel.title.substr(0,15)}...
+                                  - else
+                                      a.conn-link(href="channels/#{channel._id}") #{channel.title}
+                                div #{channel.channel_type}
+                          a(href='#')
+                            .panel-footer
+                              span.pull-left
+                                a(href="channels/#{channel._id}") View Details
+                              span.pull-right
+                                a(href="channels/#{channel._id}")
+                                  i.fa.fa-arrow-circle-right
+                              .clearfix
+
+
+            // /.col-lg-12
+          // /.row
+        // /.container-fluid
+      // /#page-wrapper
+    // /#wrapper
+    include ../includes/footer.jade

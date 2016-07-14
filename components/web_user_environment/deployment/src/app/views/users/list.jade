@@ -1,0 +1,20 @@
+extends ../layouts/default
+
+
+
+block main
+    table(border=1)
+        tr
+            th(width="100px") Name
+            th(width="100px") Email
+            th(width="100px")
+        each user in users
+            tr
+                td= user.name
+                td= user.email
+                td
+                    a.show-signup(href="/users/delete/#{user._id}") Delete
+            tr
+                td(colspan="3" bgcolor="#FFF")= user
+            tr
+                td(colspan="3" ) &nbsp;

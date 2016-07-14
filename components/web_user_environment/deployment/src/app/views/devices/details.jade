@@ -1,0 +1,182 @@
+doctype html
+html(lang='en')
+    head
+        include ../includes/head.jade
+    body
+        script(src='/js/sociotal/device.js')
+
+    #wrapper
+        // Navigation
+        nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+            include ../includes/header.jade
+            include ../includes/sidebar.jade
+        // Page Content
+        #page-wrapper
+            .container-fluid
+                .row.page-header
+                    .col-lg-10
+                        .col-xs-1
+                            i.fa.icon-generic_device.fa-4x
+                        .col-xs-9.text-left
+                            h1.pull-left #{device.title}
+                    .col-md-2.text-right
+                        - if(device.type !== 'urn:x-org:sociotal:resource:bubble')
+                            a(href='/channels/new/SocIoTalChannel?context_id=' + device.id + "&dev_type=" + device.type + "&community_name=" + community_name)
+                                button.btn.btn-primary.btn-circle.btn-lg(type="button" title="Create a new Channel linked to this Device" data-toggle="tooltip" data-placement="top")
+                                    i.fa.fa-link
+
+                        span &nbsp;
+                        button.btn.btn-danger.btn-circle.btn-lg(type='button' title="Delete" data-toggle="tooltip" data-placement="top", onclick="deleteDevice('#{device.id}', '#{community_name}')")
+                            i.fa.fa-times
+
+                .row
+                    .col-lg-12
+                        p.description= "Below you can find all the details about this SocIoTal Device, like general info and specific attributes."
+                hr
+                .row
+                    .col-md-10
+                        // channel info table
+                        .col-md-6
+                            .panel.panel-default
+                                .panel-heading
+                                    | Device info
+                                // /.panel-heading
+                                .panel-body
+                                    .table-responsive
+                                        table.table
+                                            tbody
+                                                tr
+                                                    td Entity Name
+                                                    td #{device.id.split(":")[device.id.split(":").length-1]}
+                                                tr
+                                                    td ID
+                                                    td #{device.id}
+                                                tr
+                                                    td Project
+                                                    td #{device.id.split(":")[0]}
+                                                tr
+                                                    td Deployment
+                                                    td #{device.id.split(":")[1]}
+                                                tr
+                                                    td Context Type
+                                                    td #{device.type}
+                                                tr
+                                                    td Community
+                                                    td
+                                                        - if(community_name != "0C")
+                                                            a(href="/communities/show?community_name=#{community_name}") #{community_name}
+                                                        - else
+                                                            community_name
+                                                            | General Community
+
+                                                span(id="community_name" style="display:none")=community_name
+
+                        .col-md-6
+                            .panel.panel-default
+                                .panel-heading
+                                    span.pull-left
+                                        | Attributes
+                                    span.pull-right
+                                        //a(href="")
+                                        //    button.btn.btn-primary.btn-circle.pull-right(type='button' title="Attributes" data-toggle="tooltip" data-placement="top")
+                                        //        i.fa.fa-list
+                                    .clearfix
+                                // /.panel-heading
+                                .panel-body
+                                    .table-responsive
+                                        table.table
+                                            tbody
+                                                - if(device.attributes != null)
+                                                    - each attribute in device.attributes
+                                                        - if(attribute.name !== "BubbleEntityMembers" && attribute.name !== "owner" && attribute.name !== "Owner" && attribute.name !== "update")
+                                                              tr
+                                                                td #{attribute.name}
+                                                                td #{attribute.value}
+                                                tr
+                                                    td
+                                                    td
+                                                tr
+                                                    td Owner Nickname
+                                                    td #{owner_nickname}
+
+                - if(device.type === 'urn:x-org:sociotal:resource:bubble')
+
+                    script(type='text/javascript').
+                        var attrs = '!{JSON.stringify(device.attributes)}'
+                        $(document).ready(function () {
+                            loadDevicesForBubble("#{community_name}");
+                            loadBubbleMembers(attrs);
+                        });
+
+
+                    .row
+                        .col-lg-12
+                            .col-md-10
+                                .panel.panel-default
+                                    .panel-heading
+                                        .col-lg-10
+                                            input(type="hidden" id="device-bubble" value="#{JSON.stringify(device)}")
+                                            | Entities
+
+                                        .col-md-2.text-right
+                                            button.btn.btn-primary.btn-circle(type='button', data-toggle='modal', data-target='.bs-example-modal-lg')
+                                                i.fa.fa-plus
+                                        .clearfix
+
+                                    .panel-body
+                                        input(type="hidden" id="entities-list" value="")
+                                        div(id="members-container")
+
+
+
+div.modal.fade.bs-example-modal-lg(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel')
+    .modal-dialog.modal-lg
+        .modal-content
+            .modal-header
+                button.btn.close(type="submit", data-dismiss="modal" aria-hidden="true") &times;</button>
+                h4.modal-title(id="") Select entities:
+
+            .modal-body
+                .row
+                   div(id="devices-container")
+            .modal-footer
+                button.btn.btn-default(type="submit", data-dismiss="modal" aria-hidden="true") Cancel
+                button.btn.btn-primary(type='button' onclick="saveBubble()") Save
+
+
+script(type='text/x-jquery-tmpl', id='devices-template')
+    .col-lg-4.col-md-6
+        .panel.panel-green
+            .panel-heading
+                .row
+                    .col-xs-4
+                        i.fa.icon-generic_device.fa-3x
+                    .col-xs-8.text-right
+                        div.h5
+                            a(href='#', style="color:white;")  ${id.split(":")[id.split(":").length-1]}
+                        div
+                          b
+                            ${type.split(":")[type.split(":").length-1]}
+                        div
+                          ${id.split(":")[1]}
+
+            .panel-footer
+                span.pull-left
+                    | &nbsp;
+                span.pull-right
+                    input(type="checkbox", value="${id}", ${check}, onclick="handleEntity(this)")
+
+                .clearfix
+
+script(type='text/x-jquery-tmpl', id='members-template')
+    .col-sm-4
+        .panel.panel-green
+            .panel-heading
+                .row
+                    .col-xs-4
+                        i.fa.icon-generic_device.fa-2x
+                    .col-xs-8.text-right
+                        div.h5
+                            ${member.split(":")[member.split(":").length-1]}
+                        div
+                            ${member.split(":")[1]}

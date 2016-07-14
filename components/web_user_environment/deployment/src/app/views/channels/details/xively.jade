@@ -1,0 +1,356 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+  body
+    script(src='/js/sociotal/data.js')
+    script(src='/js/sociotal/connection.js')
+    script(src='/js/sociotal/subscription.js')
+    script(type='text/javascript', src='/js/jquery.bootpag.min.js')
+
+    script(type='text/javascript').
+      var data = null;
+      var conn = null;
+      var subs = null;
+      var channel = !{JSON.stringify(channel)};
+      var subscribed = #{channel.subscribed};
+
+      $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        conn = new Connection();
+        conn.list(channel._id);
+
+        data = new Data(channel._id);
+        data.loadData();
+
+        data.connectSocketIo('#{socketioUrl}');
+
+        subs = new Subscription();
+        
+        if (subscribed){
+          $('#button-sub>i').attr('class', 'fa fa-pause');
+          $('#button-sub').tooltip('hide')
+                  .attr('data-original-title', 'Unsubscribe to stop gathering data')
+                  .tooltip('fixTitle');
+          $('#run-status').text("Subscribed      ");
+
+        } else {
+          $('#button-sub>i').attr('class', 'fa fa-play');
+          $('#button-sub').tooltip('hide')
+                  .attr('data-original-title', 'Subscribe to start gathering data')
+                  .tooltip('fixTitle');
+
+          $('#run-status').text("Unsubscribed    ");
+
+        }
+
+      });
+
+      function deleteChannel(channelId){
+        bootbox.confirm("Are you sure you want to delete the channel?", function(result){
+          if(result){
+            $.ajax({
+              url: "/channels/" + channelId ,
+              type: 'DELETE',
+              success: function(result) {
+                window.location = "/channels";
+              }
+            });
+          }
+        });
+      }
+
+
+
+      function runTask() {
+        var status = (subscribed) ? 'stop' : 'start';
+        var data = {"action": status};
+
+        $.getJSON("/channels/" + channel._id + "/run", data, function (response) {
+          if (response.success && response.started) {
+            $('#button-sub>i').attr('class', 'fa fa-pause');
+            $('#run-status').text('Subscribed      ');
+            $('#button-sub').tooltip('hide')
+                    .attr('data-original-title', 'Unsubscribe to stop gathering data')
+                    .tooltip('fixTitle');
+            subscribed = true;
+
+          }
+          if (response.success && response.stopped) {
+            $('#button-sub>i').attr('class', 'fa fa-play');
+            $('#run-status').text('Unsubscribed     ');
+            $('#button-sub').tooltip('hide')
+                    .attr('data-original-title', 'Subscribe to start gathering data')
+                    .tooltip('fixTitle');
+            subscribed = false;
+
+          }
+          // setTimeout(function () {
+          //    $('#run-status').text('');
+          // }, 2500);
+
+          data.loadData();
+        });
+      }
+
+
+   #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              img.pull-left(src="/images/#{channel.channel_type}.png" style="height:60px; margin-right: 25px")
+              span
+              h1.pull-left #{channel.title}
+
+            .col-md-2.text-right
+              a(href="/channels/#{channel._id}/edit?action=edit")
+                button.btn.btn-primary.btn-circle.btn-lg(type="button" title="Edit" data-toggle="tooltip" data-placement="top")
+                  i.fa.fa-pencil
+
+              span &nbsp;
+              a(href="#" onclick="deleteChannel('#{channel._id}')")
+                button.btn.btn-danger.btn-circle.btn-lg(type="button" title="Delete" data-toggle="tooltip" data-placement="top")
+                  i.fa.fa-times
+
+          .row
+            .col-lg-12              
+                p.description
+                  | Below you can find all the details of this Channel: general info, produced data and the listing of all the connections to other Channels.
+                  | To start gathering data, please click on the Subscribe button.
+          br
+                  
+          .row
+            .col-md-10
+              // channel info table
+              .col-md-6
+                .panel.panel-default
+                  .panel-heading
+                    | Channel info
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table
+                        tbody
+                          tr
+                            td Author
+                            td
+                              a(href="#") #{channel.user.name}
+                          tr
+                            td Type
+                            td #{channel.channel_type}
+                          tr
+                            td Date
+                            td #{formatDate(channel.createdAt, "%b %d, %Y at %I:%M %p")}
+                          tr
+                            td Description
+                            td #{channel.description}
+                          tr
+                            td Tags
+                            td #{channel.tags}
+
+
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    .col-lg-10
+                      | Data (
+                      span(id="data-count") 0
+                      span(id="data-page")
+                      |)
+
+                    .col-md-2.text-right
+                      input(type="hidden", id="channel_id", value="#{channel._id}")
+
+                      span(id="run-status")
+                      button.btn.btn-success.btn-circle(type='button' id="button-sub" onclick="runTask()" title="Subscribe to start gathering data" data-toggle="tooltip" data-placement="top")
+                        i.fa.fa-play
+
+                      span &nbsp;
+                      button.btn.btn-danger.btn-circle(type='button' onclick="data.clearData('#{channel._id}')" title="Clear data" data-toggle="tooltip" data-placement="top")
+                        i.fa.fa-times
+                    .clearfix
+                  .panel-body
+                    .table-responsive(id="data-container")
+                      input(type="hidden", id="data-content", value="")
+                      table.table.table-striped.table-bordered.table-hover(id="data-table")
+                        thead
+                          tr
+                            //th #
+                            th Date
+                            th Type
+                            th Key
+                            th Value
+                            //th Unit
+
+                        tbody(id="data-body")
+
+                      nav.pull-right
+                        ul(id="paginator").pagination
+
+
+
+                    p(id="data-empty").description
+                      | No data, yet.
+                      //a(href="#" title="Subscribe to start gathering data" data-toggle="tooltip" data-placement="top" onclick="subs.easySubscribe()") subscribe
+
+          .row.page-header
+            .col-lg-10
+              h3 Connections
+
+          .row
+            .col-lg-12
+              p.description
+                | A Connection is a logical flow between this Channel and a connected one. Connection behaviour is specified by a
+                br
+                | <i>WHEN [condition] DO [an action on the connected Channel]</i> rule.
+                br
+                | Thus, in a Connection, an action is performed on a connected Channel only when a condition is satisfied on data produced by this Channel.
+
+          br
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    .col-lg-10
+                      | This Channel is connected to...
+                    .col-md-2.text-right
+                      button.btn.btn-primary.btn-circle(type='button' title="Create a new Connection to another Channel" data-toggle="tooltip" data-placement="top" onclick="openConnectionModal('new')")
+                        i.fa.fa-plus
+                    .clearfix
+                  .panel-body()
+                    div(id="connections-list")
+                    input(type="hidden" id="connections" value="")
+                    p(id="connections-empty").description= "This Channel doesn't have connections, yet."
+                      - if(channel.channel_type == "SocIoTalChannel")
+                        |  Create your first &nbsp;
+                        a(href="" title="New connection" data-toggle="tooltip" data-placement="top") Connection
+
+
+            .row
+              .col-lg-12
+                br
+
+    include ../../includes/footer.jade
+
+
+
+
+
+script(type='text/x-jquery-tmpl', id='data-template')
+  tr
+    //td
+      h5 ${index}
+    td(width="25%", padding="2")
+      h5 ${date_created}
+    td
+      h5 ${request_type}
+    td
+      h5 ${data_type}
+    td
+      h5 ${value}
+    //td
+      h5 ${unit}
+
+script(type='text/x-jquery-tmpl', id='connection-template')
+  input(type="hidden" id="connection-${connection._id}" value="${JSON.stringify(connection)}")
+  .col-lg-4.col-md-6
+    .panel.panel-primary
+      .panel-heading
+        .row
+          .col-xs-3
+            i.fa.fa-terminal.fa-5x
+          .col-xs-9.text-right
+            div
+              h3
+                a.conn-link(href="/channels/${connection.action.targetChannelId}")
+                  ${connection.action.targetChannelName}
+            div ${connection.lab1}
+            div ${connection.lab2}
+      a(href='#')
+        .panel-footer
+          span.pull-left
+            a(href="#" onclick="conn.edit('${connection._id}')") View Details
+          span.pull-right
+            a(href="#" role='button' title="Delete connection" data-toggle="tooltip" data-placement="top" onclick="conn.delete('${connection._id}')")
+              i.fa.fa-times(style="color: #d43f3a")
+          .clearfix
+
+
+div.modal.fade(id="modal-connection", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.btn.close(type="submit", data-dismiss="modal" aria-hidden="true") &times;</button>
+        h4.modal-title(id="myModalLabel") #{channel.title} connection...
+
+        input(type="hidden", id="modal-mode", value="new")
+        input(type="hidden", id="modal-connection-id", value="new")
+        input(type="hidden", name="_csrf", id="_csrf", value="#{csrf_token}")
+        input(type='hidden', name='attributes', id="attributes" value="#{JSON.stringify(channel.attributes)}")
+        input(type='hidden', name='channelId', id="channelId" value="#{channel._id}")
+        input(type='hidden', name='channelTitle', id="channelTitle" value="#{channel.title}")
+        input(type='hidden', name='channelType', id="channelType" value="#{channel.channel_type}")
+        input(type='hidden', name='targetChannelId', id="targetChannelId" value="")
+        input(type='hidden', name='targetChannelName', id="targetChannelName" value="")
+        input(type='hidden', name='targetChannels', id="targetChannels" value="#{JSON.stringify(actionChannels)}")
+
+      .modal-body
+
+        .row
+          .col-md-10
+            span
+              h2 WHEN
+          script(type="text/javascript").
+            $(document).ready(function () {
+              loadTriggers();
+            });
+        .row(id="triggers-row")
+          .col-md-6
+            input(type="hidden", id="channel-triggers", value="#{JSON.stringify(channelTriggers)}")
+            select.form-control(id="trigger-name")
+
+          .col-md-3
+            input.form-control(id="trigger-value" type="text" placeholder="Enter the value here...")
+
+        .row
+          div.col-md-10
+            span
+              h2 DO
+
+        .row
+          .col-md-6
+            select.form-control(id="target-channels" onchange="showChannelActions(this.value)")
+              option(value="") select a channel
+                - each ch in actionChannels
+                  - if(ch.title != channel.title)
+                      option(value="#{ch.id}")= ch.title
+        .row
+          .col-md-10
+            p= ""
+
+        .row(id="action-row" style="display:none")
+          .col-md-6
+            input(type="hidden", id="action-channels")
+            select.form-control(id="action-name" onchange="changeDefautlValue(this.value, 'action')")
+              option(value="-none") select an action...
+
+          .col-md-6
+            .col-xs-5
+              textarea.form-control(id="action-value" type="text" placeholder="Enter the message here..." style="margin: 0px -152.922px 0px 0px; width: 234px; height: 82px;")
+
+
+      .modal-footer
+        button.btn.btn-default(data-dismiss="modal") Close
+        button.btn.btn-primary(onclick="conn.save()") Save

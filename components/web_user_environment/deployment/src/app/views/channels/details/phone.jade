@@ -1,0 +1,202 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+  body
+    script(src='/js/sociotal/data.js')
+    script(src='/js/sociotal/connection.js')
+    script(src='/js/sociotal/subscription.js')
+    script(type='text/javascript', src='/js/jquery.bootpag.min.js')
+
+    script(type='text/javascript').
+      var data = null;
+      var conn = null;
+
+      var channel = !{JSON.stringify(channel)};
+      $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        conn = new Connection();
+        conn.list(channel._id);
+
+        data = new Data(channel._id);
+        data.loadData();
+
+        data.connectSocketIo('#{socketioUrl}');
+      });
+
+      function deleteChannel(channelId){
+        bootbox.confirm("Are you sure you want to remove this Smartphone?", function(result){
+          if(result){
+            $.ajax({
+              url: "/channels/" + channelId ,
+              type: 'DELETE',
+              success: function(result) {
+                window.location = "/channels?type=smartphone";
+              }
+            });
+          }
+        });
+      }
+
+      function sendNotification() {
+        var msg = {"message": $('#message').val()};
+        $.post('/channels/' + channel._id + '/notify', msg, function (response) {
+          if (response.sent) {
+            data.loadData(channel._id);
+          } else
+            alert("Something has gone wrong while sending notification to this Smartphone!  \n Error:" + response.message);
+        });
+      }
+
+
+
+
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              i.fa.fa-mobile-phone.fa-5x.pull-left
+              span
+              h1.pull-left #{channel.title}
+
+            .col-md-2.text-right
+
+              a(href="#" onclick="deleteChannel('#{channel._id}')")
+                button.btn.btn-danger.btn-circle.btn-lg(type="button" title="Delete" data-toggle="tooltip" data-placement="top")
+                  i.fa.fa-times
+
+          .row
+            .col-lg-12              
+                p.description
+                  | Below you can find all the details of this Smartphone: general info, data and the listing of all the connections to other Channels.
+                br
+
+          .row
+            .col-md-10
+              // channel info table
+              .col-md-6
+                .panel.panel-default
+                  .panel-heading
+                    | Smartphone info
+                  // /.panel-heading
+                  .panel-body
+                    .table-responsive
+                      table.table
+                        tbody
+                          tr
+                            td Author
+                            td
+                              a(href="#") #{channel.user.name}
+                          tr
+                            td Type
+                            td #{channel.channel_type}
+                          - if(channel.channel_type == "SocIoTalChannel")
+                            tr
+                              td SocIoTal ID
+                              td
+                                a(href="/devices/#{channel.contextId}") #{channel.contextId}
+                          tr
+                            td Date
+                            td #{formatDate(channel.createdAt, "%b %d, %Y at %I:%M %p")}
+
+                          tr
+                            td Description
+                            td #{channel.description}
+                          tr
+                            td Tags
+                            td #{channel.tags}
+
+              .col-md-6
+                  .panel.panel-default
+                    .panel-heading
+                      span.pull-left
+                        | Test Notifications on this Smartphone
+
+                      .clearfix
+
+                    .panel-body.body
+                      form(method="post", action="", id="channel-form" enctype="multipart/form-data", role="form")
+
+                        .form-group
+                          label Message (required)
+                          textarea.form-control(id="message" placeholder='Write a message to send to this Smartphone' value="")
+
+
+                        button.btn.btn-primary(type='button' onclick="sendNotification()") Send (Test)
+
+
+          .row
+            .col-lg-12
+              .col-md-10
+                .panel.panel-default
+                  .panel-heading
+                    .col-lg-10
+                      | Data (
+                      span(id="data-count") 0
+                      span(id="data-page")
+                      |)
+
+                    .col-md-2.text-right
+
+                      span &nbsp;
+                      button.btn.btn-danger.btn-circle(type='button' onclick="data.clearData('#{channel._id}')" title="Clear data" data-toggle="tooltip" data-placement="top")
+                        i.fa.fa-times
+                    .clearfix
+                  .panel-body
+                    .table-responsive(id="data-container")
+                      input(type="hidden", id="data-content", value="")
+                      table.table.table-striped.table-bordered.table-hover(id="data-table")
+                        thead
+                          tr
+                            //th #
+                            th Date
+                            th Type
+                            th Key
+                            th Value
+                            //th Unit
+
+                        tbody(id="data-body")
+
+                      nav.pull-right
+                        ul(id="paginator").pagination
+
+
+
+                    p(id="data-empty").description
+                      | No data, yet.
+
+
+
+
+
+            .row
+              .col-lg-12
+                br
+
+    include ../../includes/footer.jade
+
+
+script(type='text/x-jquery-tmpl', id='data-template')
+  tr
+    //td
+      h5 ${index}
+    td(width="25%", padding="2")
+      h5 ${date_created}
+    td
+      h5 ${request_type}
+    td
+      h5 ${data_type}
+    td
+      h5 ${value}
+    //td
+      h5 ${unit}
+

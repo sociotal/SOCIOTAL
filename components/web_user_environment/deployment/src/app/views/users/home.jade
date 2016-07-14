@@ -1,0 +1,159 @@
+doctype html
+html(lang='en')
+  head
+    include ../includes/head.jade
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../includes/header.jade
+        include ../includes/sidebar.jade
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+                h1 Dashboard
+              .col-md-2.text-right
+                
+          .row
+            .col-lg-12
+              p.description= "Overview about all the created Channels, linked Smartphones and available SocIoTal Devices and Communities. "
+              p.description= "You can add new things and communities using the buttons below or selecting a specific category."
+
+          .row.page-header
+            .col-lg-12
+              p.description= ""
+
+          .row
+            .col-lg-12            
+                    //Channels
+                    .col-lg-3.col-md-6
+                      .panel.panel-primary
+                        .panel-heading
+                          .row
+                            .col-xs-3
+                                 i.fa.fa-link.fa-4x
+                                 
+                            .col-xs-9.text-right
+                              .huge #{stats.channels}
+                              div Channels
+                        a(href='#')
+                          .panel-footer
+                            span.pull-left
+                              a(href="/channels") View Channels
+                            span.pull-right
+                              a(href="/channels")
+                                i.fa.fa-arrow-circle-right
+                            .clearfix                           
+                      .row 
+                          br
+                      .row 
+                          .col-md-12.text-center
+                            a(href="/channels/new" title="Create a new, personal Channel linked to a SocIoTal Device")
+                              button.btn.btn-primary.btn-circle.btn-lg(type='button')
+                                i.fa.fa-plus
+                      .row
+                          .col-md-12.text-center
+                            p.description= "Create Channel"
+
+
+
+
+                      //Communities
+                    .col-lg-3.col-md-6
+                       .panel.panel-red
+                         .panel-heading
+                           .row
+                             .col-xs-3
+                                  i.fa.fa-users.fa-4x
+                             .col-xs-9.text-right
+                               #communities.huge
+                                 img(id="loader_communities" src="images/loader.gif" style="width:32px;")
+                               div Communities
+                         a(href='#')
+                           .panel-footer
+                             span.pull-left
+                               a(href="/communities") View Communities
+                             span.pull-right
+                               a(href="/communities")
+                                 i.fa.fa-arrow-circle-right
+                             .clearfix
+                       .row
+                           br
+                       .row
+                           .col-md-12.text-center
+                             a(href="/communities/new" title="Create a new community")
+                               button.btn.btn-danger.btn-circle.btn-lg(type='button')
+                                 i.fa.fa-plus
+                       .row
+                           .col-md-12.text-center
+                             p.description= "Create Community"
+
+
+
+
+
+                    //Devices
+                    .col-lg-3.col-md-6
+                      .panel.panel-green
+                        .panel-heading
+                          .row
+                            .col-xs-3
+                                i.fa.icon-generic_device.fa-4x
+                            .col-xs-9.text-right
+                              #devices.huge
+                                img(id="loader_devices" src="images/loader.gif" style="width:32px;")
+                              div Devices
+                        a(href='#')
+                          .panel-footer
+                            span.pull-left
+                              a(href="/devices") View Devices
+                            span.pull-right
+                              a(href="/devices")
+                                i.fa.fa-arrow-circle-right
+                            .clearfix
+                      
+                      .row 
+                          br
+                      .row 
+                          .col-md-12.text-center      
+                            a(href="/devices/new" title="Add a new Device to SocIoTal")
+                              button.btn.btn-success.btn-circle.btn-lg(type='button')
+                                i.fa.fa-plus
+                      .row
+                          .col-md-12.text-center
+                            p.description= "Create Device"
+                    
+                    //Smartphones
+                    .col-lg-3.col-md-6
+                      .panel.panel-yellow
+                        .panel-heading
+                          .row
+                            .col-xs-3
+                                 i.fa.fa-mobile-phone.fa-5x
+                            .col-xs-9.text-right
+                              .huge #{stats.smartphones}
+                              div Smartphones
+                        a(href='#')
+                          .panel-footer
+                            span.pull-left
+                              a(href="/channels?type=smartphone") View Smartphones
+                            span.pull-right
+                              a(href="/channels?type=smartphone")
+                                i.fa.fa-arrow-circle-right
+                            .clearfix
+                            
+                      .row 
+                          br
+
+
+    script(type='text/javascript' src='/js/sociotal/dashboard.js')
+    
+    script(type='text/javascript').    
+        $(function() {
+              fillDevicesCount();
+        });      
+     
+             
+    include ../includes/footer.jade

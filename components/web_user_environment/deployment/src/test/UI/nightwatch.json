@@ -1,0 +1,69 @@
+{
+  "src_folders" : ["tests"],
+  "output_folder" : "reports",
+  "custom_commands_path" : "",
+  "custom_assertions_path" : "",
+  "page_objects_path" : "",
+  "globals_path" : "",
+
+  "selenium" : {
+    "start_process" : false,
+    "server_path" : "./selenium/selenium-server-standalone-2.48.2.jar",
+    "log_path" : ".",
+    "host" : "127.0.0.1",
+    "port" : 4444,
+    "cli_args" : {
+      "webdriver.chrome.driver" : "./driver/chromedriver",
+      "webdriver.ie.driver" : ""
+    }
+  },
+
+  "test_settings" : {
+    "default" : {
+        "launch_url" : "http://lbsdev.crs4.it",
+        "selenium_port"  : 4444,
+        "selenium_host"  : "127.0.0.1",
+        "silent": true,
+        "screenshots" : {
+          "enabled" : false,
+          "path" : ""
+      },
+      "desiredCapabilities": {
+        "browserName": "firefox",
+        "javascriptEnabled": true,
+        "acceptSslCerts": true
+      }
+    },
+    "production" : {
+        "launch_url" : "http://sociotal.crs4.it",
+        "selenium_port"  : 4444,
+        "selenium_host"  : "127.0.0.1",
+        "silent": true,
+        "screenshots" : {
+          "enabled" : false,
+          "path" : ""
+        },
+        "desiredCapabilities": {
+          "browserName": "firefox",
+          "javascriptEnabled": true,
+          "acceptSslCerts": true
+        }
+      },
+
+      "local" : {
+          "launch_url" : "http://localhost:3000",
+          "selenium_port"  : 4444,
+          "selenium_host"  : "127.0.0.1",
+          "silent": true,
+          "screenshots" : {
+            "enabled" : false,
+            "path" : ""
+          },
+          "desiredCapabilities": {
+            "browserName": "firefox",
+            "javascriptEnabled": true,
+            "acceptSslCerts": true
+          }
+        }
+    }
+}

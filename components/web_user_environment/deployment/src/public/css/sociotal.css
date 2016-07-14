@@ -1,0 +1,56 @@
+.align-middle {
+  margin-top: 25%;
+  margin-bottom: 25%;
+}
+
+.v-center {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.v-bottom {
+    display: inline-block;
+    vertical-align: text-bottom;
+    float: none;
+}
+
+.v-top {
+    display: inline-block;
+    vertical-align: top;
+    float: none;
+}
+
+.mr-20 {
+    margin-right: 20px;
+    border: 1px solid #000;
+}
+
+.ml-20 {
+    margin-left: 20px;
+
+}
+
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.description{
+  font:"helvetica";
+  font-size: 19px;
+  color: #BEBEBE;
+}
+
+.border{
+  border: 1px solid #000;
+}
+
+.error-code{
+    font-size: 64px;
+}
+
+.conn-link{
+    color: #ffffff;
+}

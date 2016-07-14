@@ -1,0 +1,156 @@
+doctype html
+html(lang='en')
+  head
+    include ../../includes/head.jade
+    script(type='text/javascript').
+      var data = null;
+      var conn = null;
+      var subs = null;
+      $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var contextId = null;
+        var contextType = null;
+        var communityName = null;
+        var channel = !{JSON.stringify(channel)};
+        var params = !{JSON.stringify(params)};
+        console.log(params);
+
+        if(channel.title !== ""){  // edit
+          channel_type = channel.channel_type;
+          contextId = channel.contextId;
+          contextType = channel.context_type;
+          //$("#channel-form").attr("method", 'put');
+          $("#channel-form").attr("action", '/channels/' + channel._id);
+        } else {  // new
+          contextId = params.context_id;
+          contextType = params.dev_type;
+          communityName = params.community_name;
+
+          $('#sociotal_id').val(contextId);
+          $('#contextType').val(contextType);
+          $('#communityName').val(communityName);
+        }
+
+        $('#dev_name').text(contextId.split(":")[contextId.split(":").length-1]);
+        $('#dev_owner').text(contextId.split(":")[1]);
+        $('#context_id').text(contextId);
+        $('#dev_community').text(communityName);
+
+
+      });
+
+    script(type="text/javascript" src="/js/validate.min.js")
+
+  body
+    #wrapper
+      // Navigation
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0')
+        include ../../includes/header.jade
+        include ../../includes/sidebar.jade
+
+      // Page Content
+      #page-wrapper
+        .container-fluid
+          .row.page-header
+            .col-lg-10
+              img.pull-left(src="/images/SocIoTalChannel.png" style="height:60px; margin-right: 25px")
+              span
+              h1.pull-left
+                - if(params.action !== undefined && params.action === 'newChannel')
+                  | Creating a new Channel, Step 3: SocIoTal Channel
+                - else if(params.action === undefined)
+                  | New SocIoTal channel
+                - else if(params.action === "edit")
+                  | Edit #{channel.title}
+          .row
+            .col-lg-12
+                p.description= "Filling the form below you can create a new SocIoTal Channel (linked to a SocIoTal Device)."
+
+
+          .row
+            .col-lg-12
+              .col-md-3
+                br
+                br
+                br
+
+          .row
+            .col-lg-12
+              .col-md-5
+                .panel.panel-default
+                  .panel-heading
+                    | Channel details
+                  .panel-body.body
+
+                    form(id="channel-form" method="post", action="/channels", enctype="multipart/form-data", role="form")
+                      input(type="hidden", name="channel_type", value="#{channel_type}")
+                      input(type="hidden", name="sociotal_id", id="sociotal_id" value="#{contextId}")
+                      input(type="hidden", name="contextType", id="contextType" value="#{contextType}")
+                      input(type="hidden", name="communityName", id="communityName" value="#{communityName}")
+
+                      input(type="hidden", name="subscription-id", value="")
+                      - if (!channel.isNew)
+                        input(type="hidden", name="_method", value="PUT")
+
+                      .alert.alert-danger.hidden
+
+                      .form-group
+                        label Name (required)
+                        input.form-control(name="title" id="name" placeholder='Enter a name for the Channel' value="#{channel.title}")
+                      .form-group
+                        label Description
+                        textarea.form-control(name="description" rows='3' placeholder='Enter a description') #{channel.description}
+                      .form-group
+                        label Tags
+                        input.form-control(name="tags" placeholder='Enter comma-separated tags ' value="#{channel.tags}")
+                      button.btn.btn-primary(type='submit') Save
+                      | &nbsp;
+                      a(href="/channels" role="button").btn.btn-default Cancel
+              .col-lg-5
+                  .panel.panel-default
+                    .panel-heading
+                      | Device info
+                    // /.panel-heading
+                    .panel-body
+                      .table-responsive
+
+                        table.table
+                          tbody
+                            tr
+                              td Name
+                              td(id="dev_name")
+                            tr
+                              td ID
+                              td(id="context_id")
+                            tr
+                              td Owner
+                              td(id="dev_owner")
+                            tr
+                              td Community
+                              td(id="dev_community")
+
+    script(type="text/javascript").
+      var validator = new FormValidator('channel-form', [{
+        name: 'title',
+        display: 'Name',
+        rules: 'required|max_length[30]'
+      }], function (errors, event) {
+        if (errors.length > 0) {
+          $('.alert').removeClass('hidden');
+          errors.forEach(function(e, i, a){
+            $('.alert').append(e.message + '<br/>');
+
+            setTimeout(function(){
+              $('.alert').addClass('hidden');
+              $('.alert').text('');
+            }, 6000);
+          });
+
+        } else {
+          $('.alert').addClass('hidden');
+          $('.alert').text('');
+        }
+      });
+
+    include ../../includes/footer.jade

@@ -1,0 +1,37 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='description', content='')
+        meta(name='author', content='')
+        link(rel='shortcut icon', href='#{pathToAssets}/assets/ico/favicon.png')
+        title Log in to Sociotal
+        // Bootstrap core CSS
+        link(href='/startbootstrap/bower_components/bootstrap/dist/css/bootstrap.css', rel='stylesheet')
+        link(href='/css/social-sharing.css', rel='stylesheet')
+        // Custom styles for this template
+        link(href='/css/signin.css', rel='stylesheet')
+        link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", rel="stylesheet")
+    body(style="background-image: url('/images/bg.jpeg'); background-repeat: no-repeat; background-size: 100%;")
+        .container
+            form.form-signin(action="/users/session", method="post", role="form", style="background-color: #eee; border: 0px solid #000")
+                img(src="/images/sociotal_logo_login.png", style=" border: 0px solid #000")
+                - if(message.length >0 )
+                  div.alert.alert-danger= message
+                h2 Log in
+                //input#email.form-control(type="email", placeholder="Email", name="email")
+                input#username.form-control(type="username", placeholder="Username", name="username")
+                br
+                input#password.form-control(type="password", placeholder="Password", name="password")
+                button.btn.btn-primary(type='submit') Log in
+                hr(style="border: 1px solid #000")
+                a.show-signup(href="/signup") Sign up
+                | &nbsp; or &nbsp;
+                a.show-login(href="/users/password/forgot") Forgot your password?
+                br
+                //br
+                //| Or login with &nbsp;&nbsp;&nbsp;
+                //a.btn.btn-primary(href="/auth/facebook")
+                //    span.fa.fa-facebook   Facebook
+                //hr(style=" border:1px solid #000")
